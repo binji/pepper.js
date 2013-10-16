@@ -678,6 +678,13 @@ glue.structToJSVar = function(e) {
       unwrapped[key] = glue.structToJSVar(wrapped[key]);
     }
     return unwrapped;
+  } else if (type == ppapi.PP_VARTYPE_ARRAY_BUFFER) {
+    var wrapped = resources.resolve(value, ARRAY_BUFFER_RESOURCE);
+
+    // Note: "buffer" is an implementation detail of Emscripten and is likely
+    // not a stable interface.
+    var unwrapped = buffer.slice(wrapped.memory, wrapped.memory + wrapped.len);
+    return unwrapped;
   } else {
     throw "Var type conversion not implemented: " + type;
   }
